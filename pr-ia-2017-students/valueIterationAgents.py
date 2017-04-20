@@ -43,10 +43,10 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         #"*** YOUR CODE STARTS HERE ***"
         qvalue = 0
-        transSP = mdp.getTransitionStatesAndProbabilities(self, state, action)
+        transSP = self.mdp.getTransitionStatesAndProbabilities(self, state, action)
         
         for x in transSP:
-            qvalue = qvalue + x[1] * (mdp.getReward(self, state, action, x[0]) + (self.discount * self.values))
+            qvalue = qvalue + x[1] * (self.mdp.getReward(self, state, action, x[0]) + (self.discount * self.values))
         
         """
           This function is later used in doValueIteration and computeActionFromValues
@@ -73,8 +73,22 @@ class ValueIterationAgent(ValueEstimationAgent):
         # At the end it should show in the terminal the number of states
         # considered in self.values and
         # the Delta between the last two iterations
+        posValues = []
+        Delta = self.values
+        oldValues = self.values
+        posActions = self.mdp.getPossibleActions(self, state)
+        for it in range(1, self.iterations)
+            for state in states
+                for action in posActions
+                    posValues = posValues.append(self.computeQValuesFromValues(state, action))
+                self.values[state] = max(posValues)
+            for p in range(0, len(oldValues) - 1)
+                Delta[p] = abs(oldValues - self.values[p])
+            oldValues = self.values
 
-
+        print "Number of states considered: ", len(self.values)
+        print "Last Delta between iterations: ", Delta
+        return self.values
         #util.raiseNotDefined()
         #"*** YOUR CODE FINISHES HERE ***"
         
@@ -128,13 +142,14 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
 
         #"*** YOUR CODE STARTS HERE ***"
-        posActions = mdp.getPossibleActions(self, state)
+        posActions = self.mdp.getPossibleActions(self, state)
         allQValues = []
         if not posActions:
             return None
         for action in posActions:
-            allQValues.append(getQValue(seld, state, action))
-        return Counter.argMax(allQValues)
+            allQValues.append(getQValue(self, state, action))
+        best = util.Counter.argMax(allQValues)
+        return posActions[best]
 
         #"*** YOUR CODE FINISHES HERE ***"
 
