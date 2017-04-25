@@ -43,13 +43,15 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         #"*** YOUR CODE STARTS HERE ***"
         qvalue = 0
-        transSP = self.mdp.getTransitionStatesAndProbabilities(self, state, action)
+        transSP = self.mdp.getTransitionStatesAndProbabilities(state, action)
         
         for x in transSP:
-            qvalue = qvalue + x[1] * (self.mdp.getReward(self, state, action, x[0]) + (self.discount * self.values))
+            qvalue = qvalue + x[1] * (self.mdp.getReward(state, action, x[0]) 
+                + (self.discount * self.values[state]))
         
         """
-          This function is later used in doValueIteration and computeActionFromValues
+          This function is later used in doValueIteration
+          and computeActionFromValues
           So we declare it beforehand
         """
 
@@ -76,15 +78,19 @@ class ValueIterationAgent(ValueEstimationAgent):
         posValues = []
         Delta = self.values
         oldValues = self.values
-        posActions = self.mdp.getPossibleActions(self, state)
-        for it in range(1, self.iterations)
-            for state in states
-                for action in posActions
-                    posValues = posValues.append(self.computeQValuesFromValues(state, action))
-                self.values[state] = max(posValues)
-            for p in range(0, len(oldValues) - 1)
-                Delta[p] = abs(oldValues - self.values[p])
-            oldValues = self.values
+        
+        for it in range(1, self.iterations):
+            for state in states:
+                posActions = self.mdp.getPossibleActions(state)
+                for action in posActions:
+                    posValues.append(self.getQValue(state, action))
+                if not posValues:
+                    self.values[state] = 0
+                else:
+                    self.values[state] = max(posValues)
+            #for i in range(0, len(oldValues)):
+            #    Delta[state] = abs(oldValues - self.values[state])
+            #oldValues = self.values
 
         print "Number of states considered: ", len(self.values)
         print "Last Delta between iterations: ", Delta
@@ -142,14 +148,16 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
 
         #"*** YOUR CODE STARTS HERE ***"
-        posActions = self.mdp.getPossibleActions(self, state)
-        allQValues = []
-        if not posActions:
+
+        if self.mdp.isTerminal(state):
             return None
+
+        posActions = self.mdp.getPossibleActions(state)
+        allQValues = util.Counter()
+
         for action in posActions:
-            allQValues.append(getQValue(self, state, action))
-        best = util.Counter.argMax(allQValues)
-        return posActions[best]
+            allQValues[action] = self.computeQValueFromValues(state, action)
+        return util.Counter.argMax(allQValues)
 
         #"*** YOUR CODE FINISHES HERE ***"
 
