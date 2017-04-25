@@ -76,7 +76,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         # considered in self.values and
         # the Delta between the last two iterations
         posValues = []
-        Delta = self.values
+        Delta = util.Counter()
         temp = util.Counter()
         
         for it in range(self.iterations):
@@ -90,13 +90,8 @@ class ValueIterationAgent(ValueEstimationAgent):
                     for action in posActions:
                         posValues.append(self.getQValue(state, action))
                     temp[state] = max(posValues)
-                
-                print self.values[state]
-                print temp[state]
-                #print state
-            #x(temp))
-            #for i in range(0, len(oldValues)):
-            #    Delta[state] = abs(oldValues - self.values[state])
+
+            Delta = temp - self.values
 
             self.values = temp
             temp = util.Counter()
@@ -104,7 +99,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         print "Number of states considered: ", len(self.values)
         print "Last Delta between iterations: ", Delta
         return self.values
-        #util.raiseNotDefined()
+
         #"*** YOUR CODE FINISHES HERE ***"
         
     def setMdp( self, mdp):
