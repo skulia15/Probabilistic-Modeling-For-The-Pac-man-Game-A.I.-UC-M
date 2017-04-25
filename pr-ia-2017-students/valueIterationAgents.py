@@ -48,7 +48,6 @@ class ValueIterationAgent(ValueEstimationAgent):
         for x in transSP:
             qvalue = qvalue + (x[1] * (self.mdp.getReward(state, action, x[0])
              + (self.discount * self.values[x[0]])))
-            #print qvalue
         """
           This function is later used in doValueIteration
           and computeActionFromValues
@@ -75,29 +74,31 @@ class ValueIterationAgent(ValueEstimationAgent):
         # At the end it should show in the terminal the number of states
         # considered in self.values and
         # the Delta between the last two iterations
-        posValues = []
+        ValuesConsidered = []
         Delta = util.Counter()
         temp = util.Counter()
         
-        for it in range(self.iterations):
-            for state in states:
-                if self.mdp.isTerminal(state):
-                    temp[state] = 0
+        for it in range(self.iterations): #For the number of iterations
+            for state in states: #For all states
+                if self.mdp.isTerminal(state): #If state is terminal the reward 
+                    temp[state] = 0            # is 0
 
                 else:
-                    posActions = self.mdp.getPossibleActions(state)
-                    posValues = []
-                    for action in posActions:
-                        posValues.append(self.getQValue(state, action))
-                    temp[state] = max(posValues)
+                    possibleActions = self.mdp.getPossibleActions(state)
+                    ValuesConsidered = [] #Reset Q-values considered
+                    for action in possibleActions: #For all possible actions
+                        ValuesConsidered.append(self.getQValue(state, action))
+                    temp[state] = max(ValuesConsidered) #Take the highest Q-Value
 
-            Delta = temp - self.values
+            #Calculate the difference for each iteration
+            derp = util.Counter.argMax(temp - self.values)
+            maxDelta = max(maxDelta, (temp[derp] - self.values[derp]))
 
             self.values = temp
             temp = util.Counter()
 
         print "Number of states considered: ", len(self.values)
-        print "Last Delta between iterations: ", Delta
+        print "Last Delta between iterations: ", maxDelta
         return self.values
 
         #"*** YOUR CODE FINISHES HERE ***"
