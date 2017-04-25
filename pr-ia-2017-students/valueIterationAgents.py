@@ -46,9 +46,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         transSP = self.mdp.getTransitionStatesAndProbabilities(state, action)
         
         for x in transSP:
-            qvalue = qvalue + x[1] * (self.mdp.getReward(state, action, x[0]) 
-                + (self.discount * self.values[state]))
-        
+            qvalue = qvalue + (x[1] * (self.mdp.getReward(state, action, x[0])
+             + (self.discount * self.values[x[0]])))
+            #print qvalue
         """
           This function is later used in doValueIteration
           and computeActionFromValues
@@ -77,20 +77,29 @@ class ValueIterationAgent(ValueEstimationAgent):
         # the Delta between the last two iterations
         posValues = []
         Delta = self.values
-        oldValues = self.values
+        temp = util.Counter()
         
-        for it in range(1, self.iterations):
+        for it in range(self.iterations):
             for state in states:
-                posActions = self.mdp.getPossibleActions(state)
-                for action in posActions:
-                    posValues.append(self.getQValue(state, action))
-                if not posValues:
-                    self.values[state] = 0
+                if self.mdp.isTerminal(state):
+                    temp[state] = 0
+
                 else:
-                    self.values[state] = max(posValues)
+                    posActions = self.mdp.getPossibleActions(state)
+                    posValues = []
+                    for action in posActions:
+                        posValues.append(self.getQValue(state, action))
+                    temp[state] = max(posValues)
+                
+                print self.values[state]
+                print temp[state]
+                #print state
+            #x(temp))
             #for i in range(0, len(oldValues)):
             #    Delta[state] = abs(oldValues - self.values[state])
-            #oldValues = self.values
+
+            self.values = temp
+            temp = util.Counter()
 
         print "Number of states considered: ", len(self.values)
         print "Last Delta between iterations: ", Delta
