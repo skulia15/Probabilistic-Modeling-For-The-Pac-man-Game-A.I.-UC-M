@@ -74,9 +74,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         # At the end it should show in the terminal the number of states
         # considered in self.values and
         # the Delta between the last two iterations
-        ValuesConsidered = []
-        Delta = util.Counter()
-        temp = util.Counter()
+
+        temp = util.Counter() #Don't update the v-values "live"
+        maxDeltaState = ""
         
         for it in range(self.iterations): #For the number of iterations
             for state in states: #For all states
@@ -86,19 +86,21 @@ class ValueIterationAgent(ValueEstimationAgent):
                 else:
                     possibleActions = self.mdp.getPossibleActions(state)
                     ValuesConsidered = [] #Reset Q-values considered
+                     
                     for action in possibleActions: #For all possible actions
                         ValuesConsidered.append(self.getQValue(state, action))
-                    temp[state] = max(ValuesConsidered) #Take the highest Q-Value
+                    temp[state] = max(ValuesConsidered)#Take the highest Q-Value
 
-            #Calculate the difference for each iteration
-            derp = util.Counter.argMax(temp - self.values)
-            maxDelta = max(maxDelta, (temp[derp] - self.values[derp]))
+            #Calculate the difference for each iteration 
+            maxDeltaState = util.Counter.argMax(temp - self.values)
+            maxDelta = temp[maxDeltaState] - self.values[maxDeltaState]
 
-            self.values = temp
-            temp = util.Counter()
+            self.values = temp #Load the temporary value into the V-values
+            temp = util.Counter() #Reset the temporary values
 
         print "Number of states considered: ", len(self.values)
         print "Last Delta between iterations: ", maxDelta
+
         return self.values
 
         #"*** YOUR CODE FINISHES HERE ***"
