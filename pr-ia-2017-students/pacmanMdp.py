@@ -36,11 +36,17 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
         # Transition function (data structure required for the transition function)
         #*** YOUR CODE STARTS HERE ***"
-        
+        self.transitionTable = {}
+
+
+        self.getTransitionTable()
+        #self.frequencies = {}
+
+
         # This variable MUST be used to reference your transition table so
         # it can be saved and loaded from file
 
-        self.transitionTable=None
+        #self.transitionTable=None
         
         #"*** YOUR CODE FINISHES HERE ***"
 
@@ -139,7 +145,18 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
         #"*** YOUR CODE STARTS HERE ***"
 
-        util.raiseNotDefined()
+        if self.transitionTable[(initialMap, action)] == None:
+            herp = {} 
+            herp[nextMap] = (nextMap, 1)
+            self.transitionTable[(initialMap, action)] = herp
+        else:
+            temp = self.transitionTable[(initialMap, action)]
+            if temp[nextMap] == None:
+                temp[nextMap] = (nextMap, 1)
+            else:
+                temp[nextMap] += 1
+            #self.transitionTable[(initialMap, action)] = temp
+            #need to put back the entry into the dict afterwards
         
         #"*** YOUR CODE FINISHES HERE ***"
 
@@ -268,7 +285,8 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
         #"*** YOUR CODE STARTS HERE ***"
 
-        util.raiseNotDefined()
+        for action in self.getPossibleActions(state):
+            successors.append(getTransitionStatesAndProbabilities(state, action))
 
         #"*** YOUR CODE FINISHES HERE ***"
 
