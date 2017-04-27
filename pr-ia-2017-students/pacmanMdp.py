@@ -145,18 +145,21 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
         #"*** YOUR CODE STARTS HERE ***"
 
-        if self.transitionTable[(initialMap, action)] == None:
-            herp = {} 
-            herp[nextMap] = (nextMap, 1)
-            self.transitionTable[(initialMap, action)] = herp
+        # If we've not been in this state and taken action
+        if not self.transitionTable.has_key((initialMap, action)):
+            # Create a new entry in the dictionary with freq = 1
+            newEntry = {} 
+            newEntry[nextMap] = (nextMap, 1)
+            self.transitionTable[(initialMap, action)] = newEntry
+
         else:
             temp = self.transitionTable[(initialMap, action)]
-            if temp[nextMap] == None:
+            # If we've done the same action before but now with a new result
+            if not temp.has_key(nextMap):
                 temp[nextMap] = (nextMap, 1)
+            # If we've had this result before just add 1
             else:
                 temp[nextMap] += 1
-            #self.transitionTable[(initialMap, action)] = temp
-            #need to put back the entry into the dict afterwards
         
         #"*** YOUR CODE FINISHES HERE ***"
 
