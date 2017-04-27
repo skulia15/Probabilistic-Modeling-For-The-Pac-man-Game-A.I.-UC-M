@@ -153,6 +153,8 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
             self.transitionTable[(initialMap, action)] = newEntry
 
         else:
+            # Assignment in Python create bindings - temp is a reference to the 
+            # entry in the dictionary
             temp = self.transitionTable[(initialMap, action)]
             # If we've done the same action before but now with a new result
             if not temp.has_key(nextMap):
