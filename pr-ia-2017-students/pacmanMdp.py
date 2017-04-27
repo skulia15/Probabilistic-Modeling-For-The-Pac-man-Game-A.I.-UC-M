@@ -290,8 +290,24 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
         #"*** YOUR CODE STARTS HERE ***"
 
-        for action in self.getPossibleActions(state):
-            successors.append(getTransitionStatesAndProbabilities(state, action))
+        # Create a total frequency as FLOAT to be able to divide
+        totalFrequency = 0.0
+
+        # If we have any history of doing this action
+        if self.transitionTable.has_key((state, action)):
+
+            # Sum the frequencies of all possible succesor states
+            for it in range(len(self.transitionTable[(state, action)].values())):
+                totalFrequency += self.transitionTable[(state, action)].values()[it]
+
+            # Returns a list with touples of the next state with the freq
+            possibleSuccessors = self.transitionTable[(state, action)].items()
+
+            # Modify the freq in possibleSuccesors to the probability and rename
+            # it to successors
+            for it in range(len(possibleSuccessors)):
+                successors.append((possibleSuccessors[it][0], 
+                    possibleSuccessors[it][1] / totalFrequency))
 
         #"*** YOUR CODE FINISHES HERE ***"
 
