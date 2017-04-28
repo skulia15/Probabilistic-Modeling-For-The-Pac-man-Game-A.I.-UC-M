@@ -146,14 +146,17 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #"*** YOUR CODE STARTS HERE ***"
 
         # If we've not been in this state and taken action
-        if not self.getTransitionTable().has_key((state, action)):
+        if not self.transitionTable.has_key((state, action)):
             # Create a new entry in the dictionary with freq = 1
-            self.getTransitionTable()[(state, action)] = dict({nextstate: (nextstate, 1)})
+            newEntry = {}
+            newEntry[nextstate] = (nextstate, 1)
+            self.transitionTable[(state, action)] = newEntry
 
         else:
             # If we've done the same action before but now with a new result
             if not self.transitionTable[(state, action)].has_key(nextstate):
-                self.transitionTable[(state, action)] = dict({nextstate: (nextstate, 1)})
+                self.transitionTable[(state, action)][nextstate] = (nextstate, 1)
+
             # If we've had this result before just add 1
             else:
                 self.transitionTable[(state, action)][nextstate] = (nextstate,
@@ -287,7 +290,7 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #"*** YOUR CODE STARTS HERE ***"
 
         # Create a total frequency as FLOAT to be able to divide
-        totalFrequency = 0.0000
+        totalFrequency = 0.0
 
         # If we have any history of doing this action
         if self.transitionTable.has_key((state, action)):
@@ -298,13 +301,11 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
 
             # Returns a list with touples of the next state with the freq
             possibleSuccessors = self.transitionTable[(state, action)].items()
-
             # Modify the freq in possibleSuccesors to the probability and rename
             # it to successors
             for it in range(len(possibleSuccessors)):
                 successors.append((possibleSuccessors[it][0], 
                     possibleSuccessors[it][1][1] / totalFrequency))
-            print successors
 
         #"*** YOUR CODE FINISHES HERE ***"
 
