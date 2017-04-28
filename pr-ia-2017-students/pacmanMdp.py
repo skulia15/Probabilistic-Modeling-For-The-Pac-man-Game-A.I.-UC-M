@@ -146,22 +146,18 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #"*** YOUR CODE STARTS HERE ***"
 
         # If we've not been in this state and taken action
-        if not self.transitionTable.has_key((initialMap, action)):
+        if not self.getTransitionTable().has_key((state, action)):
             # Create a new entry in the dictionary with freq = 1
-            newEntry = {} 
-            newEntry[nextMap] = (nextMap, 1)
-            self.transitionTable[(initialMap, action)] = newEntry
+            self.getTransitionTable()[(state, action)] = dict({nextstate: (nextstate, 1)})
 
         else:
-            # Assignment in Python create bindings - temp is a reference to the 
-            # entry in the dictionary
-            temp = self.transitionTable[(initialMap, action)]
             # If we've done the same action before but now with a new result
-            if not temp.has_key(nextMap):
-                temp[nextMap] = (nextMap, 1)
+            if not self.transitionTable[(state, action)].has_key(nextstate):
+                self.transitionTable[(state, action)] = dict({nextstate: (nextstate, 1)})
             # If we've had this result before just add 1
             else:
-                temp[nextMap] += 1
+                self.transitionTable[(state, action)][nextstate] = (nextstate,
+                 self.transitionTable[(state, action)][nextstate][1] + 1)
         
         #"*** YOUR CODE FINISHES HERE ***"
 
@@ -291,14 +287,14 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #"*** YOUR CODE STARTS HERE ***"
 
         # Create a total frequency as FLOAT to be able to divide
-        totalFrequency = 0.0
+        totalFrequency = 0.0000
 
         # If we have any history of doing this action
         if self.transitionTable.has_key((state, action)):
 
             # Sum the frequencies of all possible succesor states
             for it in range(len(self.transitionTable[(state, action)].values())):
-                totalFrequency += self.transitionTable[(state, action)].values()[it]
+                totalFrequency += self.transitionTable[(state, action)].values()[it][1]
 
             # Returns a list with touples of the next state with the freq
             possibleSuccessors = self.transitionTable[(state, action)].items()
@@ -307,7 +303,8 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
             # it to successors
             for it in range(len(possibleSuccessors)):
                 successors.append((possibleSuccessors[it][0], 
-                    possibleSuccessors[it][1] / totalFrequency))
+                    possibleSuccessors[it][1][1] / totalFrequency))
+            print successors
 
         #"*** YOUR CODE FINISHES HERE ***"
 
