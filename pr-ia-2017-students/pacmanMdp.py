@@ -37,11 +37,7 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         # Transition function (data structure required for the transition function)
         #*** YOUR CODE STARTS HERE ***"
         self.transitionTable = {}
-
-
         self.getTransitionTable()
-        #self.frequencies = {}
-
 
         # This variable MUST be used to reference your transition table so
         # it can be saved and loaded from file
@@ -146,12 +142,12 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #"*** YOUR CODE STARTS HERE ***"
 
         # If we've not been in this state and taken action
+        # There exists no key with this state and action in the transition table
         if not self.transitionTable.has_key((state, action)):
             # Create a new entry in the dictionary with freq = 1
             newEntry = {}
             newEntry[nextstate] = (nextstate, 1)
             self.transitionTable[(state, action)] = newEntry
-
         else:
             # If we've done the same action before but now with a new result
             if not self.transitionTable[(state, action)].has_key(nextstate):
