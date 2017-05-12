@@ -32,7 +32,7 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         #    self.stateFeatures=['posX','posY','IncFoodX','IncFoodY','IncGhostX','IncGhostY','foodX','foodY','wallsW','wallsH','GhostDist','ClosestGhostX','ClosestGhostY','ClosestGhostDist','GhostPos']
 
         # Default State features
-        self.stateFeatures=['posX','posY','IncFoodX','IncFoodY','IncGhostX','IncGhostY']
+        self.stateFeatures=['posX', 'posY', 'IncFoodX', 'IncFoodY', 'IncGhostX', 'IncGhostY']
 
         # Transition function (data structure required for the transition function)
         #*** YOUR CODE STARTS HERE ***"
@@ -291,17 +291,21 @@ class PacmanMdp(mdp.MarkovDecisionProcess):
         # If we have any history of doing this action
         if self.transitionTable.has_key((state, action)):
 
-            # Sum the frequencies of all possible succesor states
+            # Sum the frequencies of all possible succesor states, which is the number of
+            # times we've performed action while being in state
             for it in range(len(self.transitionTable[(state, action)].values())):
                 totalFrequency += self.transitionTable[(state, action)].values()[it][1]
 
-            # Returns a list with touples of the next state with the freq
+            # Returns a list with tuples of the next state with the freq
             possibleSuccessors = self.transitionTable[(state, action)].items()
-            # Modify the freq in possibleSuccesors to the probability and rename
-            # it to successors
+                        
             for it in range(len(possibleSuccessors)):
                 successors.append((possibleSuccessors[it][0], 
                     possibleSuccessors[it][1][1] / totalFrequency))
+
+            # The succesors is thus a tuple with a nextstate and a number. The number is 
+            # the probability of ending up in that nextstate by applying the action while being
+            # in state
 
         #"*** YOUR CODE FINISHES HERE ***"
 
